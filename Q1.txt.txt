@@ -1,0 +1,398 @@
+**** print all elements of a list**** 
+
+print_list([]):-nl. %nl = newline
+print_list([H|T]):-write(H),write(' '),print_list(T).
+
+
+
+**** reverse all elements of a list **** 
+
+addtoend(H,[],[H]).
+addtoend(X,[H|T],[H|T1]):-addtoend(X,T,T1).
+reversex([],[]).
+reversex([H|T],Y):- reversex(T,T1), addtoend(H,T1,Y).
+
+
+
+**** palindrome ****
+
+adtoend(X,[],[X]).
+addtoend(X,[H|T],[H|Q]) :- addtoend(X,T,Q).
+palindrome([]).
+palindrome([_]).
+palindrome(L) :- reverse(L,L).
+
+
+**** create list **** 
+
+create_list(X,X,[X]).
+create_list(A,X,[A|T]):- AA is A+1, create_list(AA,X,T).
+
+
+**** mean value **** 
+
+sum_list([],0,0).
+sum_list([H|T],Length,Sum):-sum_list(T,L1,S1), Length is L1+1, Sum is S1+H.
+mean(L,M):-sum_list(L,Length,Sum), M is Sum/Length.
+
+
+**** detect whether list contains a number **** 
+
+numberinlist([]):-fail.
+numberinlist([X|T]):-number(X).
+numberinlist([X|T]):-numberinlist(T).
+
+
+**** increment elements of list **** 
+
+increment([],[]).
+increment([H|T],[X|Y]):-increment(T,Y),X is H+1.
+
+
+**** factorial function **** 
+
+factorial(0,1).
+factorial(N,X):-N>0, N1 is N-1, factorial(N1,S), X is S*N.
+
+
+**** append function **** 
+
+appendx([],A,A).
+appendx([H|T],A,[H|U]):-appendx(T,A,U).
+
+
+**** encapsulate list elements **** 
+
+encapsulate([],[]).
+encapsulate([H|T],[[H]|Y]):-encapsulate(T,Y).
+
+
+
+**** insert zeros **** 
+
+insert_zeros([],[]).
+insert_zeros([H|T],[H,0|Y]):-insert_zeros(T,Y).
+
+
+
+**** clone list **** 
+
+clone_list(T,[T,T]).
+
+
+
+**** modify list element **** 
+
+modify_list([],N,X,[]).
+modify_list([H|T],0,X,[X|T]).
+modify_list([H|T],N,X,[H|Y]):-N>0, N1 is N-1, modify_list(T,N1,X,Y).
+
+
+
+**** rotate list **** 
+
+addtoend(H,[],[H]).
+addtoend(X,[H|T],[H|T1]):-addtoend(X,T,T1).
+rotate_list([H|T],L1):-addtoend(H,T,L1).
+
+
+
+
+**** Fibonacci numbers **** 
+
+fib(1,1).
+fib(2,1).
+fib(N,F):- N>2,
+N1 is N-1, fib(N1,F1),
+N2 is N-2, fib(N2,F2),
+F is F1+F2.
+
+
+
+**** generate random values **** 
+
+random10(N):-frandom(X), Y is X*10, fix(Y,N).
+rand_row(0,[]).
+rand_row(N,[H|T]):-N>0,random10(H),N1 is N-1, rand_row(N1,T).
+square_matrix_rand(N,S):-smr(N,N,S).
+smr(N,0,[]).
+smr(N,X,[R|T]):-N>0, rand_row(N,R),X1 is X-1,smr(N,X1,T).
+
+
+
+**** 2017/18 Q1 **** 
+
+day(sunday).
+day(monday).
+day(tuesday).
+day(wednsday).
+day(thursday).
+day(friday).
+day(saturday).
+no_office(saturday).
+no_office(sunday).
+take_leave(monday).
+visit_mom(X) :- no_office(X);take_leave(X).
+working_day(X) :- day(X),(\+ no_office(X),\+ take_leave(X)).
+
+
+**** 2017/18 Q2 **** 
+
+male(dicky).
+male(oliver).
+male(mike).
+male(jack).
+male(george).
+
+female(sophie).
+female(anne).
+female(rose).
+
+father(dicky,oliver).
+father(dicky,sophie).
+father(oliver,anne).
+father(oliver,mike).
+father(oliver,jack).
+
+mother(sophie,rose).
+mother(rose,george).
+
+sibling(X, Y) :- (father(Z, X), father(Z, Y); mother(Z, X), mother(Z, Y)),X \== Y.
+
+sister(X,Y) :- father(Z,X),father(Z,Y),female(X),X\==Y.
+sister(X,Y) :- mother(Z,X),mother(Z,Y),female(X),X\==Y.
+
+brother(X,Y) :- father(Z,X),father(Z,Y),male(X),X\==Y.
+brother(X,Y) :- mother(Z,X),mother(Z,Y),male(X),X\==Y.
+
+grandmother(X,Y) :- (mother(Z,Y);father(Z,Y)),mother(X,Z),female(X).
+grandfather(X,Y) :- (mother(Z,Y);father(Z,Y)),father(X,Z),male(X).
+
+ancestor(X, Y) :- father(X, Y); mother(X, Y).
+ancestor(X, Y) :- 
+    (father(X, Z); mother(X, Z)), 
+    ancestor(Z, Y).
+
+cousin(X,Y) :- (father(Z,X);mother(Z,X)),(father(P,Y);mother(P,Y)),Z\==P,(father(Q,Z);mother(Q,Z)),(father(W,P);mother(W,P)),Q==W.
+
+son(X,Y) :- (father(Y,X);mother(Y,X)),male(X).
+daughter(X,Y) :- (father(Y,X);mother(Y,X)),female(X).
+
+
+
+
+**** family tree 01****
+
+male(harry).
+male(william).
+male(john).
+male(donald).
+male(regan).
+male(newton).
+female(aniya).
+female(andriya).
+female(melaniya).
+female(roshi).
+
+parent_of(melaniya , harry).
+parent_of(john , harry).
+parent_of(donald , melaniya).
+parent_of(aniya , melaniya).
+parent_of(donald , andriya).
+parent_of(aniya , andriya).
+parent_of(regan , newton).
+parent_of(roshi , newton).
+parent_of(andriya , william).
+parent_of(newton , william).
+
+
+father_of(X,Y):- male(X),
+    parent_of(X,Y).
+
+mother_of(X,Y):- female(X),
+    parent_of(X,Y).
+
+grandfather_of(X,Y):- male(X),
+    parent_of(X,Z),
+    parent_of(Z,Y).
+
+grandmother_of(X,Y):- female(X),
+    parent_of(X,Z),
+    parent_of(Z,Y).
+
+sister_of(X,Y):- 
+    female(X),
+    father_of(F, Y), father_of(F,X),X \= Y.
+
+sister_of(X,Y):- female(X),
+    mother_of(M, Y), mother_of(M,X),X \= Y.
+
+aunt_of(X,Y):- female(X),
+    parent_of(Z,Y), sister_of(Z,X),!.
+
+brother_of(X,Y):- 
+    male(X),
+    father_of(F, Y), father_of(F,X),X \= Y.
+
+brother_of(X,Y):- male(X),
+    mother_of(M, Y), mother_of(M,X),X \= Y.
+
+uncle_of(X,Y):-
+    parent_of(Z,Y), brother_of(Z,X).
+
+ancestor_of(X,Y):- parent_of(X,Y).
+ancestor_of(X,Y):- parent_of(X,Z),
+    ancestor_of(Z,Y).
+
+
+
+
+**** prolog scripts **** 
+
+memberx(N,[N|T]). 
+memberx(N,[X|T]):-memberx(N,T). 
+
+
+
+insertinto(N,[],[N]).
+insertinto(N,[H|T],[N,H|T]):-H>=N,!.
+insertinto(N,[H|T],[H|Y]):-insertinto(N,T,Y).
+
+
+
+memberx(N,[N|T]). 
+memberx(N,[X|T]):-memberx(N,T). 
+deleteall(N,[],[]). 
+deleteall(N,[N|T],U):-!,deleteall(N,T,U). 
+deleteall(N,[H|T],[H|U]):-deleteall(N,T,U). 
+delete_dupl([],[]). 
+delete_dupl([H|T],Y):-memberx(H,T),!,deleteall(H,T,T1),delete_dupl(T1,Y). 
+delete_dupl([H|T],[H|Y]):-delete_dupl(T,Y). 
+
+
+
+memberx(N,[N|T]). 
+memberx(N,[X|T]):-memberx(N,T). 
+delete_unique([],[]). 
+delete_unique([H|T],[H|Y]):-memberx(H,T),!,delete_unique(T,Y). 
+delete_unique([H|T],Y):-delete_unique(T,Y). 
+
+
+
+
+memberx(N,[N|T]). 
+memberx(N,[X|T]):-memberx(N,T). 
+deleteall(N,[],[]). 
+deleteall(N,[N|T],U):-!,deleteall(N,T,U). 
+deleteall(N,[H|T],[H|U]):-deleteall(N,T,U). 
+make_unique([],[]). 
+make_unique([H|T],[H|Y]):-memberx(H,T),!,deleteall(H,T,T1),make_unique(T1,Y). 
+make_unique([H|T],[H|Y]):-make_unique(T,Y).
+
+
+
+
+maximumx(P,D,V):- P>=D, V=P, !. 
+maximumx(P,D,V):-V=D. max([H],H). 
+max([H|T],X):-max(T,S), 
+maximumx(H,S,X). 
+
+
+
+
+morethan(_,[],[]). 
+morethan(K,[H|T],[H|U]):- H>=K, morethan(K,T,U),!. 
+morethan(K,[H|T],U):- morethan(K,T,U). 
+
+
+
+deleteall(N,[],[]). 
+deleteall(N,[N|T],U):-!,deleteall(N,T,U). 
+deleteall(N,[H|T],[H|U]):-deleteall(N,T,U).	
+
+
+
+deleteat(_,[],[]). 
+deleteat(0,[H|T],T):-!. 
+deleteat(N,[H|T],[H|Y]):-N1 is N-1, deleteat(N1,T,Y). 
+
+
+
+
+split_list(_,[],[[],[]]). 
+split_list(0,T,[[],T]). 
+split_list(N,[H|T],[[H|Y],Z]):-N1 is N-1, split_list(N1,T,[Y,Z]).
+
+
+
+couple_elem([1,a,b,4,5],X). 
+couple_elem([],[]). 
+couple_elem([H1,H2|T],[[H1,H2]|Y]):-couple_elem(T,Y). 
+
+
+
+
+find_key([H|A],[R|B],H,R):-!. 
+find_key([H1|A],[R|B],H,Y):-find_key(A,B,H,Y). 
+translator(_,_,[],[]). 
+translator(A,B,[H|T],[R|Y]):-find_key(A,B,H,R), translator(A,B,T,Y). 
+
+
+
+fullmember(N,[N|T]):-!. 
+fullmember(N,[X|T]):-fullmember(N,X),!. 
+fullmember(N,[X|T]):-fullmember(N,T). 
+
+
+
+
+simple_list([],[]). 
+simple_list([H|T],Y):-is_list(H),!,simple_list(H,L1),simple_list(T,L2),append(L1,L2,Y). 
+simple_list([H|T],[H|Y]):-simple_list(T,Y). 
+
+
+
+
+difference_list([],_,[]). 
+difference_list([H|T],X,Y):-member(H,X),!,difference_list(T,X,Y). 
+difference_list([H|T],X,[H|Y]):-difference_list(T,X,Y).
+
+
+
+**** Tower of hanoi ****
+
+tower_of_hanoi(1, Source, Destination, _):-
+    write('Move top disk from '),
+    write(Source),
+    write(' to '),
+    write(Destination),
+    nl.
+	
+tower_of_hanoi(N, Source, Destination, Auxiliary):-
+    N > 1,
+    M is N - 1,
+    tower_of_hanoi(M, Source, Auxiliary, Destination),
+    tower_of_hanoi(1, Source, Destination, _),
+    tower_of_hanoi(M, Auxiliary, Destination, Source).
+
+
+
+
+**** monkey banana ****
+
+move(state(middle,onbox,middle,hasnot),
+   grasp,
+   state(middle,onbox,middle,has)).
+move(state(P,onfloor,P,H),
+   climb,
+   state(P,onbox,P,H)).
+move(state(P1,onfloor,P1,H),
+   drag(P1,P2),
+   state(P2,onfloor,P2,H)).
+move(state(P1,onfloor,B,H),
+   walk(P1,P2),
+   state(P2,onfloor,B,H)).
+canget(state(_,_,_,has)).
+canget(State1) :-
+   move(State1,_,State2),
+   canget(State2).
