@@ -1,3 +1,40 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 **** print all elements of a list**** 
 
 print_list([]):-nl. %nl = newline
@@ -97,6 +134,30 @@ rotate_list([H|T],L1):-addtoend(H,T,L1).
 
 
 
+**** rotate list from N'th element**** 
+
+
+appendLast([H|T],X) :- appendX(T,[H],X).
+
+appendX([],L,L) :- !.
+appendX([H|T],L,[H|X]) :- appendX(T,L,X).
+
+lastElm([X],X):-!.
+lastElm([H|T],X) :- lastElm(T,X).
+
+deleteLastElm([X],[]) :- !.
+deleteLastElm([H|T],X) :- deleteLastElm(T,X2),appendX([H],X2,X).
+
+rotate([H|T],-1,X) :- lastElm([H|T],Last),appendX([Last],[H|T],X2),deleteLastElm(X2,X),!.
+rotate([H|T],N,X) :- N<0, N2 is N+1,lastElm([H|T],Last),appendX([Last],[H|T],X2),deleteLastElm(X2,X3),rotate(X3,N2,X),!.
+
+rotate([H|T],1,X) :- appendLast([H|T],X),!.
+rotate([H|T],N,X) :- N>=1,N2 is N-1,appendLast([H|T],X2),rotate(X2,N2,X).
+
+
+
+
+
 
 **** Fibonacci numbers **** 
 
@@ -167,6 +228,9 @@ brother(X,Y) :- mother(Z,X),mother(Z,Y),male(X),X\==Y.
 
 grandmother(X,Y) :- (mother(Z,Y);father(Z,Y)),mother(X,Z),female(X).
 grandfather(X,Y) :- (mother(Z,Y);father(Z,Y)),father(X,Z),male(X).
+
+uncle_of(X,Y):-
+    parent_of(Z,Y), brother_of(Z,X).
 
 ancestor(X, Y) :- father(X, Y); mother(X, Y).
 ancestor(X, Y) :- 
@@ -243,8 +307,6 @@ uncle_of(X,Y):-
 ancestor_of(X,Y):- parent_of(X,Y).
 ancestor_of(X,Y):- parent_of(X,Z),
     ancestor_of(Z,Y).
-
-
 
 
 **** prolog scripts **** 
@@ -361,6 +423,7 @@ difference_list([H|T],X,[H|Y]):-difference_list(T,X,Y).
 
 **** Tower of hanoi ****
 
+
 tower_of_hanoi(1, Source, Destination, _):-
     write('Move top disk from '),
     write(Source),
@@ -377,8 +440,8 @@ tower_of_hanoi(N, Source, Destination, Auxiliary):-
 
 
 
-
 **** monkey banana ****
+
 
 move(state(middle,onbox,middle,hasnot),
    grasp,
@@ -396,3 +459,188 @@ canget(state(_,_,_,has)).
 canget(State1) :-
    move(State1,_,State2),
    canget(State2).
+
+
+
+********specia Codes All in passpapers***************
+
+
+******contain number ******
+
+containsNumber([]) :- fail.
+containsNumber([X]) :- number(X),!.
+containsNumber([H|T]) :- (number(H),!);containsNumber(T).
+
+
+******contain number ******
+
+contain_number([H|_]):- number(H).
+contain_number([_|T]):- contain_number(T).
+
+
+
+******delete duplicate values******
+
+
+memberx(N,[N|T]).
+memberx(N,[X|T]):-memberx(N,T).
+deleteall(N,[],[]).
+deleteall(N,[N|T],U):-!,deleteall(N,T,U).
+deleteall(N,[H|T],[H|U]):-deleteall(N,T,U).
+delete_dupl([],[]).
+delete_dupl([H|T],Y):-memberx(H,T),!,deleteall(H,T,T1),delete_dupl(T1,Y).
+delete_dupl([H|T],[H|Y]):-delete_dupl(T,Y).
+
+
+
+******delete unique values******
+
+
+memberx(N,[N|T]).
+memberx(N,[X|T]):-memberx(N,T).
+delete_unique([],[]).
+delete_unique([H|T],[H|Y]):-memberx(H,T),!,delete_unique(T,Y).
+delete_unique([H|T],Y):-delete_unique(T,Y).
+
+
+
+******disjoint************
+
+
+disjoint([], _).
+disjoint([H|T], K) :-
+    \+ member(H, K),
+    disjoint(T, K).
+	
+	
+	
+	
+******fibonicc************
+
+
+fib(1,1).
+fib(2,1).
+fib(N,F):- N>2, N1 is N-1, fib(N1,F1),N2 is N-2, fib(N2,F2),F is F1+F2.
+
+
+
+
+****Insert Secton*******
+
+
+member(X, [X|_]).
+member(X, [_|T]) :- member(X, T).
+
+intersection([], _, []).
+intersection([H|T1], L, [H|T2]) :-
+    member(H, L),
+    intersection(T1, L, T2).
+intersection([_|T1], L, T2) :-
+    intersection(T1, L, T2).
+	
+	
+	
+****remove_parentheses*******
+
+
+remove_parentheses([], []).
+remove_parentheses([X|Rest], [X|Result]) :-
+    \+ is_list(X),
+    remove_parentheses(Rest, Result).
+remove_parentheses([X|Rest], Result) :-
+    is_list(X),
+    remove_parentheses(X, InnerResult),
+    remove_parentheses(Rest, RestResult),
+    append(InnerResult, RestResult, Result).
+	
+	
+	
+***** Sort List *****
+
+is_sorted([]).
+is_sorted([_]).
+is_sorted([X,Y|T]) :- X =< Y, is_sorted([Y|T]).
+
+
+
+**** Sub set *****
+
+
+subset([], _).
+subset([H|T], K) :-
+    member(H, K),
+    subset(T, K).
+	
+	
+
+****Union****
+
+
+append([], L, L).
+append([H|T], L, [H|R]) :-
+    append(T, L, R).
+
+member(X, [X|_]).
+member(X, [_|T]) :- member(X, T).
+
+remove_duplicates([], []).
+remove_duplicates([H|T], [H|R]) :-
+    \+ member(H, T),
+    remove_duplicates(T, R).
+remove_duplicates([H|T], R) :-
+    member(H, T),
+    remove_duplicates(T, R).
+
+union(L, K, M) :-
+    append(L, K, N),
+    remove_duplicates(N, M).
+
+
+**** couple element ****
+
+
+couple_elem([1,a,b,4,5],X). 
+couple_elem([],[]). 
+couple_elem([H1,H2|T],[[H1,H2]|Y]):-couple_elem(T,Y). 
+
+
+**** find key ****
+
+
+find_key([H|A],[R|B],H,R):-!. 
+find_key([H1|A],[R|B],H,Y):-find_key(A,B,H,Y). 
+translator(_,_,[],[]). 
+translator(A,B,[H|T],[R|Y]):-find_key(A,B,H,R), translator(A,B,T,Y). 
+
+
+**** full member ****
+
+
+fullmember(N,[N|T]):-!. 
+fullmember(N,[X|T]):-fullmember(N,X),!. 
+fullmember(N,[X|T]):-fullmember(N,T). 
+
+
+**** simple list ****
+
+simple_list([],[]). 
+simple_list([H|T],Y):-is_list(H),!,simple_list(H,L1),simple_list(T,L2),append(L1,L2,Y). 
+simple_list([H|T],[H|Y]):-simple_list(T,Y). 
+
+
+**** difference list ****
+
+
+difference_list([],_,[]). 
+difference_list([H|T],X,Y):-member(H,X),!,difference_list(T,X,Y). 
+difference_list([H|T],X,[H|Y]):-difference_list(T,X,Y).
+
+
+	
+
+
+
+
+
+
+
