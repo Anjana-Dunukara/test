@@ -1,0 +1,123 @@
+a)
+(i)create view emp_salary AS SELECT emp_id,basic_salary FROM employee;
+	SELECT * from emp_salary;
+	
+(ii)create view Name_City_Sex AS SELECT first_name,last_name,city,sex from employee;
+	select * from Name_City_Sex;
+	
+(iii)create view Female_Married AS select * from employee WHERE sex='female' AND married='yes';
+	select * from Female_Married;
+	
+(iv)CREATE VIEW emp_id_between_10000_20000 AS select * from employee WHERE basic_salary BETWEEN 10000 AND 20000;
+	select * from emp_id_between_10000_20000;
+	
+(v)create view bornEmpDetails AS select * from employee where dob between '1980-12-12' AND '1990-05-06';
+	SELECT * FROM bornEmpDetails;
+	
+(vi)create view live AS select * from employee where city='Jaffna' OR city='Colombo';
+	select * from live;
+	
+(vii)select * from employee;
+
+(viii)create view FullNameData AS SELECT concat(first_name,' ',last_name) as Full_Name,city FROM employee;
+	select * from FullNameData;
+	
+(b)drop view emp_salary,Name_City_Sex;
+
+(c)drop view Female_Married,emp_id_between_10000_20000,bornEmpDetails,live,FullNameData;
+
+
+   *************************** CREATE VIEW IN MYSQL Activity 03 Answers *********************
+
+create database EMP;
+
+use EMP;
+
+
+create table EMPLOYEE (
+    emp_ID VARcHAR(10),
+    first_name VARcHAR(20),
+    last_name VARcHAR(20),
+    city VARcHAR(20),
+    phone VARcHAR(20),
+    married ENUM('yes','no'),
+    dob DATE,
+    sex ENUM('male','female'),
+    basic_salary DECIMAL(10,2)
+);
+
+INSERT INTO EMPLOYEE VALUES('E1002','Anne','Santhi','Kandy','2223852','yes','1986-01-01','female',13000.00),
+('E1003','Maran','Vithu','Batticaloa','5623856','no','1990-03-30','male',15000.00),
+('E1010','Jeya','Kumar','Colombo','8978456','no','1984-12-12','female',25000.00),
+('E1004','Aswin','Ravi','Jaffna','2222563','yes','1985-08-12','male',18500.00),
+('E1009','Asha','Vimukthi','Batticaloa','2145693','yes','1987-10-27','female',12500.00),
+('E1005','Andrew','John','Colombo','7896523','yes','1983-02-28','male',19000.00);
+
+
+(i.)
+    CREATE VIEW EmployeeSalaryView AS
+    SELECT emp_ID, basic_salary
+    FROM Employee;
+
+    SELECT * FROM EmployeeSalaryView;
+(ii.)
+    CREATE VIEW displayNameCitySex AS 
+    SELECT first_name , last_name , city , sex 
+    FROM Employee;
+
+    SELECT * FROM displayNameCitySex;
+(iii.)
+    CREATE VIEW femaleMarriedEmployee AS
+    SELECT first_name , last_name 
+    FROM Employee 
+    WHERE married = 'yes' AND sex = 'female';
+
+    SELECT * FROM femaleMarriedEmployee;
+(iv.)
+    CREATE VIEW empId AS
+    SELECT emp_ID
+    FROM Employee
+    WHERE basic_salary > 10000.00 AND basic_salary < 20000.00;
+
+     SELECT * FROM empId;
+    -- or
+
+    CREATE VIEW empIdnew AS
+    SELECT emp_ID
+    FROM Employee 
+    WHERE basic_salary BETWEEN 10000.00 AND 20000.00;
+
+
+    SELECT * FROM empIdnew;
+
+(v.)
+   CREATE VIEW empBirth AS
+    SELECT first_name, last_name
+    FROM employee
+    WHERE dob > '1980-12-12' AND dob < '1990-05-06';
+
+
+    SELECT * FROM empBirth;
+
+ (vi.)
+    CREATE VIEW empLives AS
+    SELECT first_name , last_name
+    FROM employee
+    WHERE city = 'Jaffna' OR city = 'Colombo';
+
+    SELECT * FROM empLives;
+ (vii.)
+    CREATE VIEW EmployeeSummary AS
+    SELECT * FROM Employee;
+
+    SELECT * FROM EmployeeSummary;
+(viii.)
+    CREATE VIEW fullNameEmp AS
+    SELECT CONCAT(first_name , ' ' , last_name) AS FullName
+    FROM employee;
+
+    SELECT * FROM fullNameEmp;
+
+(b.) how to drop in view table.
+
+   	DROP VIEW EmployeeSalaryView;

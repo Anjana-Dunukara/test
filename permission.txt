@@ -1,0 +1,28 @@
+//Create a New User
+CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
+
+//list all users
+Select user from mysql.user;  
+
+//Review a user’s current permissions
+SHOW GRANTS FOR 'username'@'localhost';
+
+//Grant Permission Syntax
+GRANT type_of_permission ON database_name.table_name TO 'username'@'localhost';
+GRANT ALL PRIVILEGES ON *.* TO 'username'@'localhost';
+
+FLUSH PRIVILEGES;
+
+//Revoke Permission Syntax
+REVOKE type_of_permission ON database_name.table_name FROM 'username'@'localhost';
+
+//DROP to delete a user
+DROP USER 'username'@'localhost';
+
+//Permission types
+CREATE – Allows users to create databases/tables
+SELECT – Allows users to read data
+INSERT – Allows users to insert data
+UPDATE – Allows users to update existing data
+DELETE – Allows users to delete data
+DROP – Allows users to drop databases/tables

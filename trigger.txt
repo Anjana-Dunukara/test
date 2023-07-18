@@ -1,0 +1,286 @@
+1) Write a Trigger that stores the old data table of student table in student_backup while
+updating the student table.
+
+
+Student_backup (Stud_ID, Stud_name, Address, Contact_no, Branch, Operation_date)
+Student (Stud_ID, Stud_name, Address, Contact_no, Branch)
+
+///backup table
+
+CREATE TABLE student_backup (
+    backup_id INT AUTO_INCREMENT PRIMARY KEY,
+    Stud_ID INT NOT NULL,
+    Stud_name VARCHAR(50) NOT NULL,
+    Address VARCHAR(100) NOT NULL,
+    Contact_no VARCHAR(15) NOT NULL,
+    Branch VARCHAR(50) NOT NULL,
+    Operation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+//trigger
+
+DELIMITER $$
+
+CREATE TRIGGER tr_student_update
+AFTER UPDATE ON Student
+FOR EACH ROW
+BEGIN
+    INSERT INTO student_backup (Stud_ID, Stud_name, Address, Contact_no, Branch)
+    VALUES (OLD.Stud_ID, OLD.Stud_name, OLD.Address, OLD.Contact_no, OLD.Branch);
+END $$
+
+DELIMITER ;
+
+
+********************************************************
+
+
+2) Write a trigger, that ensures the empno of emp table is in a format ‘E00001’ (empno must
+start with ‘E’ and must be 6 characters long). If not, than complete empno with this format
+before inserting into the employee table.
+
+
+CREATE TABLE emp (
+    empno VARCHAR(6) NOT NULL,
+    empname VARCHAR(50) NOT NULL,
+    -- Other columns...
+    PRIMARY KEY (empno)
+);
+
+CREATE TABLE employee (
+    empno VARCHAR(6) NOT NULL,
+    empname VARCHAR(50) NOT NULL,
+    -- Other columns...
+    PRIMARY KEY (empno)
+);
+
+
+DELIMITER $$
+
+CREATE TRIGGER tr_emp_insert
+BEFORE INSERT ON emp
+FOR EACH ROW
+BEGIN
+    IF LENGTH(NEW.empno) < 6 THEN
+        SET NEW.empno = CONCAT('E', LPAD(NEW.empno, 5, '0'));
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+********************************************************
+
+
+3) Write a trigger which checks the age of employee while inserting the record in emp table. If it
+is negative than generate the error and display proper message.
+
+
+DELIMITER $$
+
+CREATE TRIGGER tr_emp_insert
+BEFORE INSERT ON emp
+FOR EACH ROW
+BEGIN
+    IF DATEDIFF(CURDATE(), NEW.birthdate) < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid birthdate. Age cannot be negative.';
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+********************************************************
+
+
+
+4) Write a trigger which converts the employee name in upper case if it is inserted in any other
+case. Change should be done before the insertion only.
+
+
+DELIMITER $$
+
+CREATE TRIGGER tr_emp_insert
+BEFORE INSERT ON emp
+FOR EACH ROW
+BEGIN
+    IF NEW.empname != UPPER(NEW.empname) THEN
+        SET NEW.empname = UPPER(NEW.empname);
+    END IF;
+END $$
+
+DELIMITER ;
+
+*************************************************
+
+
+5) WAT that stores the data of emp table in emp_backup table for every delete operation and
+store the old data for every update operation.
+EMP(Empno, Empname, salary);
+Emp_Backup(Empno,Empname,Date_of_operation,Type_of_operation (i.e.update or
+delete));
+
+
+CREATE TABLE Emp (
+    Empno INT NOT NULL,
+    Empname VARCHAR(50) NOT NULL,
+    Salary DECIMAL(10, 2) NOT NULL,
+    PRIMARY KEY (Empno)
+);
+
+CREATE TABLE Emp_Backup (
+    Empno INT NOT NULL,
+    Empname VARCHAR(50) NOT NULL,
+    Date_of_operation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Type_of_operation ENUM('update', 'delete') NOT NULL
+);
+
+
+DELIMITER $$
+
+CREATE TRIGGER tr_emp_delete
+AFTER DELETE ON Emp
+FOR EACH ROW
+BEGIN
+    INSERT INTO Emp_Backup (Empno, Empname, Type_of_operation)
+    VALUES (OLD.Empno, OLD.Empname, 'delete');
+END $$
+
+CREATE TRIGGER tr_emp_update
+AFTER UPDATE ON Emp
+FOR EACH ROW
+BEGIN
+    INSERT INTO Emp_Backup (Empno, Empname, Type_of_operation)
+    VALUES (OLD.Empno, OLD.Empname, 'update');
+END $$
+
+DELIMITER ;
+
+
+****************************************************
+
+
+6) WAT which display the message ‘Updating’,’Deleting’ or ’Inserting’ when Update, Delete or
+Insert operation is performed on the emp table respectively.
+
+
+DELIMITER $$
+
+CREATE TRIGGER tr_emp_update
+AFTER UPDATE ON emp
+FOR EACH ROW
+BEGIN
+    SELECT 'Updating' AS Operation;
+END $$
+
+CREATE TRIGGER tr_emp_delete
+AFTER DELETE ON emp
+FOR EACH ROW
+BEGIN
+    SELECT 'Deleting' AS Operation;
+END $$
+
+CREATE TRIGGER tr_emp_insert
+AFTER INSERT ON emp
+FOR EACH ROW
+BEGIN
+    SELECT 'Inserting' AS Operation;
+END $$
+
+DELIMITER ;
+
+
+**********************************************************
+
+
+7) WAT which generate an error if any user try to delete from product_master table on
+weekends (i.e. Saturday and Sunday).
+
+DELIMITER $$
+
+CREATE TRIGGER tr_product_delete
+BEFORE DELETE ON product_master
+FOR EACH ROW
+BEGIN
+    IF DAYOFWEEK(CURDATE()) IN (1, 7) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Deleting from product_master is not allowed on weekends.';
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+*********************************************************
+
+
+8) WAT which inserts the value of client_no in the client_master table whenever user tries to
+insert data in the emp table. Generate primary key using sequence and enter the
+client_no using that sequence.
+Client_Master(client_no,client_name,address,city);
+
+
+CREATE TABLE Client_Master (
+    client_no INT AUTO_INCREMENT PRIMARY KEY,
+    client_name VARCHAR(100) NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    city VARCHAR(50) NOT NULL
+);
+
+
+CREATE SEQUENCE client_no_seq START WITH 1;
+
+
+DELIMITER $$
+
+CREATE TRIGGER tr_emp_insert
+BEFORE INSERT ON emp
+FOR EACH ROW
+BEGIN
+    DECLARE next_client_no INT;
+    SELECT NEXTVAL(client_no_seq) INTO next_client_no;
+    INSERT INTO Client_Master (client_no, client_name, address, city)
+    VALUES (next_client_no, 'Client Name', 'Client Address', 'Client City');
+END $$
+
+DELIMITER ;
+
+
+*********************************************************
+
+
+9) WAT to calculate the Income Tax amount and insert it in emp table.
+EMP(emp_no,emp_name, emp_income, income_tax);
+If emp_income <100000 and >=50000 then incometax = 10%
+If emp_income <200000 and >=100000 then incometax = 15%
+If emp_income <300000 and >=200000 then incometax = 20%
+
+ALTER TABLE EMP
+ADD COLUMN income_tax DECIMAL(10, 2);
+
+
+DELIMITER $$
+
+CREATE TRIGGER tr_emp_calculate_income_tax
+BEFORE INSERT ON EMP
+FOR EACH ROW
+BEGIN
+    DECLARE tax_rate DECIMAL(4, 2);
+    IF NEW.emp_income >= 50000 AND NEW.emp_income < 100000 THEN
+        SET tax_rate = 0.10;
+    ELSEIF NEW.emp_income >= 100000 AND NEW.emp_income < 200000 THEN
+        SET tax_rate = 0.15;
+    ELSEIF NEW.emp_income >= 200000 AND NEW.emp_income < 300000 THEN
+        SET tax_rate = 0.20;
+    ELSE
+        SET tax_rate = 0.0;
+    END IF;
+
+    SET NEW.income_tax = NEW.emp_income * tax_rate;
+END $$
+
+DELIMITER ;
+
+

@@ -1,0 +1,102 @@
+delimiter ||
+CREATE PROCEDURE dorepeat(p1 INT)
+BEGIN
+SET @x = 0;
+REPEAT SET @x = @x + 1; 
+UNTIL @x > p1 END REPEAT;
+END ||
+delimiter ;
+CALL dorepeat(1000);
+
+
+delimiter ||
+create procedure proc7(in sal double)
+begin
+select Name,Salary+sal from Employee;
+end ||
+delimiter ;
+call proc7(15000);
+
+
+delimiter ||
+create procedure proc1(out p1 int)
+select count(*) into p1 from Employee;
+end ||
+delimiter ;
+call proc1(@a);
+select @a;
+
+
+1. Create the table student(StuName varchar(20),Marks int)
+
+delimiter ||
+create procedure proc3(in Mar int)
+select StuName,Marks+Mar as New_Marks from Student;
+||
+delimiter ;
+call proc3(2);
+
+
+3. Write the procedure to insert the new value into student table
+
+delimiter ||
+create procedure proc4(in Nam varchar(20),in Mar int)
+insert into Student values(Nam,Mar);
+||
+delimiter ;
+call proc4('Gopi',80);
+
+
+4. Write the procedure to count the Number of students in the student table
+
+delimiter ||
+create procedure proc6(out p1 int)
+select count(StuName) into p1 from Student;
+||
+delimiter ;
+call proc6(@No_of_Students);
+select @No_of_Students;
+
+
+5. Write the procedure to view the Marks of <anyname>
+
+delimiter ||
+create procedure proc7(in nam varchar(20),out mar int)
+select Marks into mar from Student where StuName=nam;
+||
+delimiter ;
+call proc7('Mathu',@Marks);
+select @Marks;
+
+
+2. Write the procedure to increase the Marks by 2 and insert it in to new_Mark column
+
+delimiter ||
+create procedure proc8(inout Mar int)
+select StuName,Marks+Mar as New_Marks from Student;
+||
+delimiter ;
+set @M=2;
+call proc8(@M);
+
+
+delimiter ||
+create procedure updatestatus1(in mark1 int)
+begin
+declare mymark int;
+if mymark>mark1 then
+update studentnew set status="pass" where marks=mymark;
+else
+update studentnew set status="fail" where marks=mymark;
+end if;
+end;
+||
+
+
+delimiter ||
+create procedure pr(inout i int(3),inout j varchar(20),inout k int(2))
+select i,j,k;
+||
+delimiter ;
+set @i=002,@j='dad',@k=91;
+call pr(@i,@j,@k);
