@@ -1,0 +1,742 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------2017/2018 past paper --------------------------------------
+
+
+Q(1).
+
+(a) . steps to create vitual machine ..
+
+
+
+I. Prerequisite
+	1. Download virtual box using the website “virtualbox.org”.
+	2. Install virtual box on your windows host.
+	3. Download iso file of Ubuntu Server by visiting the website “ubuntu.com”
+
+II. Creating Ubuntu Virtual Machine (VM)
+	1. Start VirtualBox and click on New button to create new virtual machine.
+	2. Enter name of VM 
+	Ex. “Ubuntu_Server”
+	3. Select OS Type: “Linux”
+	4. Select Version: “Ubuntu(64bit)”
+	5. Then Click to Next button.
+	6. Set VM’s memory size to 2GB and click on Next button.
+	7. Choose VM’s hard disk option to “Create a virtual hard disk now”.
+	8. Adjust the disk size to 50GB.
+	9. Click Next button.
+	10. Click Finish button.
+	
+III. Setting up boot device
+
+
+	1. Select the VM from left panel on Virtual Box, right click and open Settings.
+	2. Click on Storage title and Select CD ROM icon under the Controller: IDE.
+	3. Click on CD ROM icon under the Attribute on the left side to select.
+	4. Choose Virtual Optical Disk File.
+	5. Locate the Ubuntu CD image file you have.
+	
+IV. Setting up Network Interface.
+
+	1. Click on Network title.
+	2. While Enable Network Adapter selected, choose Attached to NAT then click Ok.
+
+
+
+V. Installing Ubuntu Server.
+	1) Initial installation settings.
+	
+	1) Start “Ubuntu_Server”.
+	2) Select “Try or Install Ubuntu server”.
+	3) Choose your preferred language as “English”.
+	4) Choose “Continue without updating”.
+	5) In keyboard configuration, select Keyboard layout and variant as “English (Us)”.
+	6) In type of install, select “Ubuntu Server” and select “Search for third-party 
+		drivers” in Additional options.
+	7) In the Network Connection, keep the setting as it is.
+	8) For Configure proxy, leave the proxy address blank.
+	9) For Ubuntu mirror address, leave the default as it is.
+	
+	2) Disk Configuration.
+		1. In guided storage configuration Select “Custom storage layout”
+		
+		
+VI. SSH connection to the Guest OS
+	1. Check ssh is installed in your Guest OS (Linux Server)
+		• $ssh
+	✓ If ssh not installed 
+	I. Install ssh on Guest Os
+		• $sudo apt install openssh-server
+	2. Verify the ssh service is running.
+		• $sudo systemctl status ssh.
+	3. If the status is not active (running) enable the ssh server and start it.
+		• $sudo systemctl enable ssh
+		• $sudo systemctl start ssh
+		
+		
+VII. Install Putty
+	
+	1. Download putty using the website “https://www.putty.org/”.
+	2. Install putty on your windows host.
+
+VIII. Virtual Box Settings
+
+	1. Go to 
+		Oracle Virtual Box Manager → Machine → Settings → Network → Adapter 1 →
+		Advanced → Port Forwarding → Add
+	
+		• Name : ssh
+		• Protocol : TCP
+		• Host IP : 127.0.0.1
+		• Host Port : 2222 (or any unused port)
+		• Guest IP : 10.0.2.15 (Depends on your guest IP address)
+		• Guest Port : 22
+	
+	2. Then click OK.
+	
+	3. Go to the putty on windows machine.
+		• In hostname or ip address : 127.0.0.1
+		• Port : 2222
+		• Connection type : ssh
+	
+	4. Then click open.
+(c)
+
+	(i) Restart Ubuntu Server:
+		 sudo reboot
+
+	
+	(ii) List the installed packages in Ubuntu Server:
+			dpkg --list | grep '^ii'
+	
+	(iii)
+	
+	(iv)
+	
+	
+	
+(Q2).
+
+
+	(a). identify network interfaces  
+	
+		$ip link show
+	
+	
+	(b). add the ip address 10.0.2.20/24 to etwork interface enp03
+	
+		$sudo ip addr add 10.0.2.20/24 dev enp0s3
+		
+	(c).
+	
+	
+		$sudo ip link set dev enp0s3 down
+	
+	(d).
+	
+		$sudo ip link set dev enp0s3 up
+
+	(e).
+	
+		$ip address show dev enp0s3
+	
+	(f). Add temporary DNS
+	
+		$sudo vi /etc/resolv.conf
+
+(Q4).
+
+
+(a).add group
+
+	sudo groupadd guestgroup
+	
+(b).add user to group
+
+	sudo usermod -aG guestgroup guesttc
+	
+(c).
+
+	sudo etc/groups
+	
+	
+(d). delete user from group
+
+	sudo gpasswd -d guest guestgroup
+	
+
+
+	
+	
+	
+	
+	
+.............................manage user .........................................................
+	
+	
+* cat /etc/passwd | grep student
+
+* sudo useradd user_name
+
+* sudo useradd -m user_name (create home directory if doesnt exist)
+
+* how to delete a user & its home folder directory.
+		sudo rm -r /home/user_name
+
+* rename user name
+		sudo -l newuser_name olduser_name
+		
+* how to change current user passwd
+	
+	passwd
+
+* how to change another user password
+
+	sudo passwd user_name
+	
+* create system user
+
+	sudo useradd -r system_user
+
+* add user with diffrent options
+
+	useradd -d /home/gem -g developers -c "Gem the coders" -s /bin/ksh  <user_name>
+
+* user delete
+	
+	userdel <options> user_name
+	
+	
+*user mod command
+	
+	usermod -d /home/gem-new -m -l <new_name> <old_user>
+	
+*Adding user with different options:
+
+✓ Ex:
+➢ useradd -d homedir -g groupname -m -s shellname -u userid <accname>
+	• -d - Define custom home directory (Default /home/<username>)
+	• -g -Assign a group to this user (By default primary will be created same as username)
+	• -m - Create home directory if doesn’t exist
+	• -s - Specify the custom shell (Default shell is /bin/sh)
+	
+
+• The usermod command enables you to make changes to an existing account from the scommand line.
+• It uses the same arguments as the useradd command. 
+	Example :
+		usermod –d /home/gem-new-m-l gem-dev gem-developer
+		▪ -d - Changing home directory to/home/gem-new
+		▪ -m - Create /home/gem-new directory is not available 
+		▪ -l - Change Login name to gem-developer
+		• -c = We can add comment field for the user account.
+		• -d = To modify the directory for any existing user account.
+		• -e = Using this option we can make the account expiry in specific period.
+		• -g = Change the primary group for a user
+		• -G = To add a supplementary groups.
+		• -a = To add anyone of the group to a secondary group. 
+		• -l = To change the login name 
+		• -L = To lock the user account. This will lock the password so we can’t use the account. 
+		• -m = moving the contents of the home directory from existing home dir to new dir.
+		• -p = To use un-encrypted password for the new password (NOT Secured).
+		• -s = create a specified shell for new accounts.
+		• -u = used to assigned UID for the user account between 0 to 999
+		• -U = To unlock the user accounts. This will remove the password lock and allow us to see the user account.
+
+
+	
+.............................manage group .........................................................
+	
+* view groups
+	
+	cat etc/groups
+	
+* create groups
+
+	sudo groupadd <group_name>
+	
+* delete group
+
+	sudo dgroupdel <group_name>
+	
+* adding a user in a group
+
+	sudo usermod -aG <group_name> <user_name>
+	
+* rename group
+
+	usermod -n <after_name> <befor_name>
+	
+* rename group id
+
+	groupmod -g 5774 <group_name>
+	
+* remove user in group
+
+	sudo gpasswd -d <user_name> <group_name>
+	
+	
+*
+
+	
+	
+	
+		
+		
+............................Changing the Screen Size...........................................
+
+
+
+1. Changing the Screen Size
+
+	Open /etc/default/grub file.
+	Type the below commands
+
+	GRUB_GFXMODE=1280x1024 #width x height required
+	GRUB_CMDLINE_LINUX_DEFAULT="nomodeset"
+	GRUB_GFXPAYLOAD_LINUX=keep
+	
+	Save the file. Then issue the following commands
+
+	sudo update-grub
+	sudo reboot
+
+2. Changing the Terminal Fontsize
+	
+	Open /etc/default/console-setup file.
+	Change the values for font type and font size to
+
+	FONTFACE="TER"
+	FONTSIZE="16x32"
+	Save the file. Then issue the following command
+	sudo update-initramfs -u
+
+
+
+
+
+
+......................Processes Handling in Ubuntu Server.........................
+
+
+
+
+1. List all process in current shell.
+
+	$ ps
+ 
+2. Display every active processes
+ 
+	$ ps -A
+	$ ps -e
+
+3. Display all process and process not associated with terminal
+	
+	$ ps -au or
+	$ ps -aux
+
+
+4. To perform full-format listing.
+	$ ps -ef OR $ ps -eF
+
+
+5. To select all the process owned by the user.
+
+	$ ps -x
+
+
+6. To display users, process by real user id or name.
+
+
+	$ ps -fu guesttc (your username)
+	OR
+	$ ps -fu 1002 (to see the user id: id -u username)
+
+
+7. To Display root process
+
+
+	$ ps -fu root
+	OR
+	$ ps -fu 0
+
+
+7. To Display root process
+
+
+	$ ps -fu root
+	OR
+	$ ps -fu 0
+
+
+8. Display Group process
+
+	$ ps -fg guesttc
+	OR
+	$ ps -fg 1008
+	to find the group id getent group | grep mygroup) or (cat /etc/group | grep mygroup)
+
+
+9. Display process by PID and PPID
+
+	$ ps -fp 1588 - Select process by ppid
+	$ ps -f --ppid 1587 - Make Selection Using PID List
+	$ ps -fp 1394,1587
+
+
+10. Print process tree
+
+	$ ps -e --forest
+	From this tree we can identify which is the parent process and the child process it forked 
+	in a recursive manner.
+	To print the process tree for a given process.
+	
+	$ ps -f --forest -C sshd ( -C for command )
+	OR
+	$ ps -ef --forest | grep sshd
+
+
+11. Print Process Threads
+
+	$ ps -fL -C sshd
+	Output:
+	LWP: Light Weight Process
+	NLWP: Number of Light Weight Process
+
+
+12. Troubleshoot Linux System Performance.
+
+
+	To find top running process
+	$ ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head
+
+	The head piping will display for first 10 line of the record, if you want to view more or less 
+	pass the line number as -n parameter.
+
+	$ ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head -n 15
+	If you want to sort by cpu value
+	$ ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head
+	If you want to stop any process that is consuming high cpu time
+	$ kill -o pid
+
+13. To see Real-time Process Monitoring.
+
+	watch -n 1 'ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head'
+	-n : interval in seconds.
+	To exit: Ctl + z
+	
+
+..............Configuring Static, Dynamic IP Address on Ubuntu Server.....................
+
+
+1. Check/Display all available network interface
+	$ip link show
+
+2. Identifying Ethernet Interfaces
+	$sudo ip a OR $ip a
+	[Loopback address is a software address (127.0.0.1)]
+	$sudo ip addr OR $ip addr
+	$sudo lshw –class network
+	[Detailed hardware information about network cards on Linux]
+
+
+3. Check the current IP of the server
+	$ifconfig 
+	
+	
+4. Temporary IP address assignment
+	
+	1). Temporary IP address assigning (This will work on real environment & it is not 
+	physically connected to the network)
+	
+	$sudo ip addr add 10.0.2.20/24 dev enp0s3
+	$sudo ip link set dev enp0s3 down
+	$sudo ip link set dev enp0s3 up
+	$ip address show dev enp0s3
+	
+	
+	
+2). Configure Default gateway
+		$sudo ip route add default via 10.0.2.1
+		$sudo ip route show (to see the default gateway)
+
+3). Add temporary DNS Client address
+	
+	✓ Edit /etc/resolv.conf
+	$sudo vi /etc/resolv.conf
+	Add nameserver 8.8.8.8
+	
+4). To delete all IP configuration
+		
+		$sudo ip addr flush enp0s3
+	
+5). Static IP Address assignment.
+	
+	• Go to netplan directory
+		$cd /etc/netplan
+	• List out the contents in the netplan
+		$ll
+		
+	 Open the .yaml file 
+		$sudo vi 00-installer-config.yaml
+
+	• Then apply the changers 
+		$sudo netplan apply
+	
+	• See the IP address by giving the command “ifconfig”
+		$ifconfig
+
+6). Dynamic IP Address Assignment (DHCP) To configure your server to use DHCP dynamic address assignment 
+	
+	• open the file “/etc/netplan/50-cloud-init.yaml”
+		$sudo vi /etc/netplan/00-installer-config.yaml
+		Keep the dhcp4 = true
+		Save the file and exit
+		
+	• Apply the changes on configuration by giving the command “netplan apply”
+		$sudo netplan apply
+		
+		
+		
+		
+ ...............Configuring DHCP Server in Ubuntu Server................
+ 
+1. Update and upgrade the server.
+
+	sudo apt update
+	sudo apt upgrade
+
+ 
+2. Now install the DHCP server.
+
+	sudo apt install isc-dhcp-server
+
+
+3. Change the network configuration file (00-installer-config.yaml file) with the 
+below values.
+
+	sudo nano /etc/netplan/00-installer-config.yaml
+
+
+	addresses: [10.10.10.50/24]
+	routes: 
+	- to: default
+	via: 10.10.10.1
+	nameservers:
+	address: [8.8.8.8, 8.8.4.4]
+
+4. Apply the changes.
+
+	sudo netplan apply
+
+
+5. Configure the dhcpd.conf file.
+	sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf.backup
+	sudo nano /etc/dhcp/dhcpd.conf
+
+
+
+	i. Before configure the file take a backup of the file.
+	ii. After taking the backup open the dhcpd.conf file with any text editor
+6. Do the changes in the configuration file with the below values.
+
+	subnet 10.10.10.0 netmask 255.255.255.0 {
+	range 10.10.10.100 10.10.10.200;
+	option subnet-mask 255.255.255.0;
+	option domain-name-servers 8.8.8.8, 8.8.4.4;
+	}
+
+7. Save the file and exit.
+
+	Ctrl + X, Y, Enter
+
+8. Restart the DHCP server.
+	
+	sudo service isc-dhcp-server restart
+
+
+9. Check the status of the DHCP server. (Check the status is in active or not, if not troubleshoot 
+the problem)
+
+	sudo service isc-dhcp-server status
+
+
+10. In client side,
+
+	i. Open the Ubuntu Desktop as a client in your virtual environment. (If Ubuntu desktop not available then install)
+
+11. Now check your IP address of your client OS. (Ubuntu desktop)
+	
+	ip address
+
+
+12. In your DHCP server side, check the leased addresses.
+
+	sudo dhcp-lease-list
+
+
+To assign fixed IP address with a mac address
+
+
+1. Configure the dhcpd.conf file with the below values,
+a. Client host name
+b. Client host mac address
+2. Restart the DHCP service again and check the status as well.
+
+	sudo service isc-dhcp-server restart
+
+3. Now check the IP address of the client machine.
+	
+	ip address
+
+4. In your DH
+
+
+
+
+
+
+
+
+
+
+
+
+
+........................Install Apache, MySQL & PHP on Ubuntu Server...........................
+
+
+
+1. Install Apache webserver.
+	1.1. Update Ubuntu Server
+	1.2. Upgrade Ubuntu Server
+	1.3. Install Apache web server
+	1.4. Check Apache webserver running or not.
+	1.5. To test apache web server, open your web browser and access the apache test page by navigating to http://localhost/
+If you can see Apache2 Ubuntu Default Page, Apache server is working
+
+
+2. Install MySQL
+	
+	2.1. To install MySQL on Ubuntu run
+	2.2. Verify if MySQL service is running or not by
+	2.3. To view passwords of MySQL
+	2.4. To add the password to mysql root.
+	2.5. Check the password is set properly to the MySQL First leave from logged in MySQL Again log-in to the MySQL
+
+3. Install PHP
+	
+	3.1. Install PHP
+	3.2. After installing PHP, create info.php in the apache root document folder In the created file add the following line
+	3.3. In the created file add the following line
+	<?php
+	phpinfo();
+	?>
+	
+	3.4. And save and quite the file.
+	3.5. Restart the apache service to take effect the changes
+	3.6. Test PHP Open up your web browser and navigate to localhost:8080 /info.php in address bar
+✓ Check the version of PHP
+$ php -version
+
+   Now we are going to create an HTML form to take your username and password to store in a mysql database using PHP
+
+1. Create an html form in the location of /var/www/html
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Form site</title>
+</head>
+<body>
+<form method="post" action="myform.php">
+Username: <input type="text" name="uname"><br><br>
+Password: <input type="password" name="upassword"><br><br>
+<input type="submit" value="Submit">
+</form>
+</body>
+</html>
+
+
+2. Save and exit the file
+
+
+3. Next create a database and table in mysql
+
+
+	3.1. Login to mysql
+	3.2. Enter the password for user root (This will be your class password: 'Testwebpw1$')
+	3.3. Create a database with the name myDB.
+	3.4. View the list of databases
+	3.5. Create a table ‘user in database ‘myDB’
+	3.6. Check the structure of the above created table
+	3.7. Finally create the php file which connect both html and mysql database.
+
+
+<?php
+$host = "localhost";
+$dbusername = "root";
+$dbpassword = "Testwebpw1$";
+$dbname = "myDB";
+//Create Connection
+$conn = new mysqli ($host, $dbusername, $dbpassword, 
+$dbname);
+$username = $_POST['uname'];
+$password = $_POST['upassword'];
+//Insert value in database table
+$sql = "INSERT INTO user (name, password) values 
+('$username', '$password')";
+if($conn->query($sql)){
+echo "New record is inserted successfully";
+}
+else {
+echo "Error: ". $sql . "<br>". $conn->error;
+}
+$conn->close();
+?>
+
+
+4. Save the file and exit
+
+5. Now open the HTML form and test it using your browser.
